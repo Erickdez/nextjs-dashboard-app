@@ -1,6 +1,7 @@
-import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, PlusIcon, TrashIcon, CheckIcon, ClockIcon } from '@heroicons/react/24/outline';
+import clsx from 'clsx';
 import Link from 'next/link';
-import { deleteInvoice } from '@/app/lib/actions';
+import { deleteInvoice, changeStatus } from '@/app/lib/actions';
 
 export function CreateInvoice() {
   return (
@@ -33,6 +34,39 @@ export function DeleteInvoice({ id }: { id: string }) {
       <button className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+export function ChangeStatus({ id, status }: { id: string, status: string }) {
+  const changeStatusWithId = changeStatus.bind(null, id, status);
+
+  return (
+    <form action={changeStatusWithId}>
+      <button>
+        <span
+          className={clsx(
+            'inline-flex items-center rounded-full px-2 py-1 text-xs',
+            {
+              'bg-gray-100 text-gray-500': status === 'pending',
+              'bg-green-500 text-white': status === 'paid',
+            },
+          )}
+        >
+          {status === 'pending' ? (
+            <>
+              Pending
+              <ClockIcon className="ml-1 w-4 text-gray-500" />
+            </>
+          ) : null}
+          {status === 'paid' ? (
+            <>
+              Paid
+              <CheckIcon className="ml-1 w-4 text-white" />
+            </>
+          ) : null}
+        </span>
       </button>
     </form>
   );

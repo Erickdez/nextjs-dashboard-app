@@ -130,3 +130,23 @@ export async function deleteInvoice(id: string) {
         return { message: 'Database Error: Failed to Delete Invoice.' };
     }
   }
+
+export async function changeStatus(id: string, status: string) {
+    if (!['pending', 'paid'].includes(status)) {
+        return { message: 'Invalid Status.' };
+    }
+
+    const new_status = status === 'paid' ? 'pending' : 'paid';
+
+    try {
+        await sql`
+            UPDATE invoices
+            SET status = ${new_status}
+            WHERE id = ${id}
+        `;
+        revalidatePath('/dashboard/invoices');
+        return { message: 'Updated Invoice Status.' };
+    } catch (error) {
+        return { message: 'Database Error: Failed to Update Invoice Status.' };
+    }
+}
